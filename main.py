@@ -15,18 +15,9 @@
 
 #Dica: fitlre a lista de usaurios busncado o numero do cpf informado para cada usuario da lista. 
 
-saldo = 0 
-limite = 500
-LIMITE_SAQUE = 3
-numero_saque = 0
-registro_extrato = ''
-usuarios =[]
-contas = [] 
-AGENCIA = 0001
-numero_conta = 0 
 
 def criar_usuario(usuarios):
-    cpf = int(input("Digite somente os numeros de seu CPF: \n"))
+    cpf = input("Digite somente os numeros de seu CPF: \n") #problema de int é que desconsidera o 0. Então 098 será armazenado como 98.  
     usuario = filtrar_usuario(cpf, usuarios) #vai buscar a função filtrar_usuario, para confirmar se ja tem algum usuario com esse cpf
     if usuario:
         print(" \n  Este CPF já está vinculado à um usuário")
@@ -48,9 +39,9 @@ def filtrar_usuario(cpf, usuarios): #parametros são o cpf e a lista com os usu�
 ### É ISSO QUE ESTÁ SENDO CHECADO COM O IF. SE EXISTIR, ELE AVISA NA TELA E ENCERRA A FUNÇÃO, RETORNADO PARA O MENU
 
 def criar_conta(usuario, numero_conta, agencia):
-    usuario = usuario
     numero_conta = numero_conta + 1
     agencia = agencia
+    print("Conta Criada com Sucesso!!")
     return ({"usuario": usuario, "numero_conta": numero_conta, "agencia": agencia})
 
 
@@ -82,34 +73,52 @@ def extrato(saldo,/, *, registro_extrato):
     print("Não foram realizadas movimentações." if not registro_extrato else registro_extrato)
     print(f"\nSaldo: R$ {saldo:.2f}")
 
-menu = """"
-[1] Criar Usuário
-[2] Criar Conta
-[3] Sacar 
-[4] Depositar
-[5] Extrato
-[0] Sair
-"""  
+def main():
+    saldo = 0 
+    limite = 500
+    LIMITE_SAQUE = 3
+    numero_saque = 0
+    registro_extrato = ''
+    usuarios =[]
+    contas = [] 
+    AGENCIA = "0001"
+    numero_conta = 0 
 
-while True:
-    opcao = int(input(menu))
-    if opcao == 1:
-        criar_usuario(usuarios) #como parametro, está a lista onde serão armazenados os usuarios 
-    elif opcao == 2:
-        user = int(input("Digite seu CPF."))
-        checagem =  [usuario for usuario in usuarios if usuario["cpf"] == checagem]
-        if checagem:
-            conta = criar_conta(user, numero_conta, AGENCIA)
-            contas.append(conta)
-    elif opcao == 4:
-        valor = float(input("Quanto gostaria de sacar? "))
-        saldo, registro_extrato, numero_saque = saque(saldo=saldo, valor=valor, numero_saque=numero_saque, LIMITE_SAQUE=LIMITE_SAQUE, registro_extrato=registro_extrato )
-    elif opcao == 5:
-        valor = float(input("Quanto gostaria de depositar?"))
-        saldo, registro_extrato = depositar(saldo, valor, registro_extrato)
-    elif opcao == 6:
-        extrato(saldo, registro_extrato=registro_extrato)
-    elif opcao == 0:
-        break
-    else:
-        print("Valor de operaçõ inválido. Digite novamente")
+    menu = """"
+    [1] Criar Usuário
+    [2] Criar Conta
+    [3] Sacar 
+    [4] Depositar
+    [5] Extrato
+    [6] Verificar Contas
+    [0] Sair
+    """  
+
+    while True:
+        opcao = int(input(menu))
+        if opcao == 1:
+            criar_usuario(usuarios) #como parametro, está a lista onde serão armazenados os usuarios 
+        elif opcao == 2:
+            user = input("Digite seu CPF: \n")
+            checagem =  [usuario for usuario in usuarios if usuario["cpf"] == user]
+            if checagem:
+                conta = criar_conta(checagem, numero_conta, AGENCIA)
+                contas.append(conta)
+            else:
+                print("Precisa criar um usuário antes!")
+        elif opcao == 3:
+            valor = float(input("Quanto gostaria de sacar? "))
+            saldo, registro_extrato, numero_saque = saque(saldo=saldo, valor=valor, numero_saque=numero_saque, LIMITE_SAQUE=LIMITE_SAQUE, registro_extrato=registro_extrato )
+        elif opcao == 4:
+            valor = float(input("Quanto gostaria de depositar?"))
+            saldo, registro_extrato = depositar(saldo, valor, registro_extrato)
+        elif opcao == 5:
+            extrato(saldo, registro_extrato=registro_extrato)
+        elif opcao == 6:
+            print(contas)
+        elif opcao == 0:
+            break
+        else:
+            print("Valor de operaçõ inválido. Digite novamente")
+
+main()
